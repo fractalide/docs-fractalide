@@ -1,0 +1,34 @@
+= Certificate Subcommand
+
+Tooling for offline transaction creation
+
+[source, bash]
+----
+jcli certificate [subcommand]
+----
+
+== Certificate builder
+
+Builds a signed certificate.
+
+The process can be split into discreet steps after the certificate
+is created.
+
+[source, bash]
+----
+jcli certificate new stake-pool-registration \
+  --vrf-key <vrf-public-key> --kes-key <kes-public-key> \
+  [--owner <owner-public-key>] \
+  --serial <node-serial> \
+  <output-file>
+----
+
+If the `output-file` is omitted, the result will be written to `stdout`. Once the
+certificate is ready you must sign it with the private keys of
+all the owners:
+
+
+[source, bash]
+----
+jcli certificate sign <key> <input-file> <output-file>
+----

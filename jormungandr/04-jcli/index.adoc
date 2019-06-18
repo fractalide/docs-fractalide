@@ -1,0 +1,26 @@
+= JCLI
+
+Generally interfacing with the node requires the use of JCLI, which is a command line application that contains all the cryptographic functions needed to work well. JCLI is mostly meant for developers and stake pool operators. It allows offline operations:
+
+* generating cryptographic materials for wallets and stake pools
+* creating addresses, transactions and certificates
+* prepare a new blockchain
+
+and it allows simple interactions with the node:
+
+* query stats
+* send transactions and certificates
+* get raw blocks and UTxOs
+* etc
+
+include::01-key.adoc[leveloffset=+1]
+
+include::02-address.adoc[leveloffset=+1]
+
+include::03-transaction.adoc[leveloffset=+1]
+
+include::04-certificate.adoc[leveloffset=+1]
+
+include::05-genesis.adoc[leveloffset=+1]
+
+include::06-rest.adoc[leveloffset=+1]

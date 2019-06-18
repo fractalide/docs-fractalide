@@ -1,0 +1,71 @@
+= Address Subcommand
+
+Jormungandr comes with a subcommand to create and manipulate addresses.
+
+[source, bash]
+----
+$ jcli address [subcommand]
+----
+
+For example; creating addresses from public keys for debugging addresses and for testing.
+
+== Display address info
+
+To display an address and verify it is in a valid format you can utilise:
+
+[source, bash]
+----
+$ jcli address info ta1svy0mwwm7mdwcuj308aapjw6ra4c3e6cygd0f333nvtjzxg8ahdvxlswdf0
+discrimination: testing
+public key: ed25519e_pk1pr7mnklkmtk8y5tel0gvnksldwywwkpzrt6vvvvmzus3jpldmtpsx9rnmx
+----
+
+another example:
+
+[source, bash]
+----
+$ jcli address \
+    info \
+    ceo1qsy0mwwm7mdwcuj308aapjw6ra4c3e6cygd0f333nvtjzxg8ahdvxz8ah8dldkhvwfghn77se8dp76uguavzyxh5cccek9epryr7mkkr8n7kgx
+discrimination: production
+public key: ed25519e_pk1pr7mnklkmtk8y5tel0gvnksldwywwkpzrt6vvvvmzus3jpldmtpsx9rnmx
+group key:  ed25519e_pk1pr7mnklkmtk8y5tel0gvnksldwywwkpzrt6vvvvmzus3jpldmtpsx9rnmx
+----
+
+== Creating an address
+
+Each subcommand can create an address for testing or production networks; simply add the flag `--testing` to the end of the command.
+
+== Address for UTxO
+
+You can create a bootstrap era address by executing the following command.
+
+[source, bash]
+----
+$ jcli address \
+    single ed25519e_pk1jnlhwdgzv3c9frknyv7twsv82su26qm30yfpdmvkzyjsdgw80mfqduaean
+ca1qw207ae4qfj8q4yw6v3ned6psa2r3tgrw9u3y9hdjcgj2p4pcaldyukyka8
+----
+
+This kind of address is useful when running in the BFT era or if delegation is not
+desired.
+
+== Address for Account
+
+Account are much simpler to use, they are needed to create reward account
+but it is also possible to utilise them as a wallet.
+
+An Account address can do three things:
+
+* Send Luceo
+* Receive Luceo
+* Delegate staking rights to a stakepool
+
+To create an account:
+
+[source, bash]
+----
+$ jcli address \
+    account ed25519e_pk1c4yq3hflulynn8fef0hdq92579n3c49qxljasrl9dnuvcksk84gs9sqvc2
+ca1qhz5szxa8lnujwva8997a5q42nckw8z55qm7tkq0u4k03nz6zc74ze780qe
+----

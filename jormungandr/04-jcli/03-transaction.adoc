@@ -1,0 +1,170 @@
+= Transaction Subcommand
+
+Tooling for offline transaction creation and signing.
+
+[source, bash]
+----
+jcli transaction [subcommand]
+----
+
+There is a couple subcommands that can be used to:
+
+1. prepare a transaction:
+    - `new` creates a new empty transaction;
+    - `add-input` adds a utxo input
+    - `add-account` adds an account
+    - `add-output` adds a utxo output
+2. `finalize` the transaction for signing:
+3. create witnesses and add the witnesses:
+    - `make-witness`
+    - `add-witness`
+4. `seal` the transaction, ready to send to the blockchain
+
+There are also functions to help decode and display the
+content information of a transaction:
+
+* `info`
+* `id` to get the **Transaction ID** of the transaction
+* `to-message` to get the hexadecimal encoded message, ready to send with `cli rest message`
+
+
+== Examples
+
+Let's say we have the following utxo
+
+|===
+| *Field*                   | *Value*        |
+| UTXO's transaction ID     | 55762218e5737603e6d27d36c8aacf8fcd16406e820361a8ac65c7dc663f6d1c|
+| UTXO's output index       | 0     |
+| associated address        |  ca1q09u0nxmnfg7af8ycuygx57p5xgzmnmgtaeer9xun7hly6mlgt3pjyknplu    |
+| associated value          | 100             |
+|===
+
+And we want to transfer 50 lu to the following address
+
+ca1qvnr5pvt9e5p009strshxndrsx5etcentslp2rwj6csm8sfk24a2wlqtdj6
+
+== Create a staging area
+
+[source, bash]
+----
+jcli transaction new > tx
+----
+
+== Adding a tx `input`
+
+A tx `input` consists of the `UTxO transaction id number`, the `UTxO output index` and the `amount`, which indicates the amount of coin you want to send. The last parameter `--staging <file>` is also required as it'll amend the contents of that file.
+
+=== Example
+
+[source, bash]
+----
+jcli transaction add-input  55762218e5737603e6d27d36c8aacf8fcd16406e820361a8ac65c7dc663f6d1c 0 100 --staging tx
+----
+
+== Adding a tx `output`
+
+Adding a tx output consists of two parameters; the address to send to and the `--staging <file>` you'll add the data to.
+
+[source, bash]
+----
+jcli transaction add-output  ca1qvnr5pvt9e5p009strshxndrsx5etcentslp2rwj6csm8sfk24a2wlqtdj650 --staging tx
+----
+
+== Adding a `fee` and `change` address
+
+We want to get the change in the same address that we are sending from (the *associated address* of the utxo). We also specify how to compute the fees.
+You can leave out the `--fee-constant 5 --fee-coefficient 2` part if those are both 0.
+
+[source, bash]
+----
+jcli transaction finalize  ca1q09u0nxmnfg7af8ycuygx57p5xgzmnmgtaeer9xun7hly6mlgt3pjyknplu --fee-constant 5 --fee-coefficient 2 --staging tx
+----
+
+Now, if you run
+
+[source, bash]
+----
+jcli transaction info --fee-constant 5 --fee-coefficient 2 --staging tx
+----
+
+You should see something like this
+
+[source, YAML]
+----
+Transaction `0df39a87d3f18a188b40ba8c203f85f37af665df229fb4821e477f6998864273' (finalizing)
+  Input:   100
+  Output:  89
+  Fees:    11
+  Balance: 0
+ - 55762218e5737603e6d27d36c8aacf8fcd16406e820361a8ac65c7dc663f6d1c:0 100
+ + ca1qvnr5pvt9e5p009strshxndrsx5etcentslp2rwj6csm8sfk24a2wlqtdj650 50
+ + ca1q09u0nxmnfg7af8ycuygx57p5xgzmnmgtaeer9xun7hly6mlgt3pjyknplu 39
+----
+
+== Signing the transaction
+
+=== Making a witness
+
+For signing the transaction a private key needs to be associated with a UTxO input address and the hash of the genesis block of the network you are connected to.
+
+The genesis' hash is needed to ensure the transaction cannot be re-used in another blockchain and for security concerns in offline transaction signing, as we are signing the transaction for the specific blockchain started by a unique block0 hash.
+
+The following command takes the private key in the *key.prv* file and creates a witness in a file named *witness* in the same directory.
+
+[source, bash]
+----
+jcli transaction make-witness --genesis-block-hash abcdef987654321... --type utxo txid --staging tx witness key.prv
+----
+
+=== Adding the witness
+
+[source, bash]
+----
+jcli transaction add-witness witness --staging tx
+----
+
+== Send the transaction
+
+[source, bash]
+----
+jcli transaction seal --staging tx
+----
+
+[source, bash]
+----
+jcli transaction to-message --staging tx > txmsg
+----
+
+Send it using the rest api
+
+[source, bash]
+----
+jcli rest v0 message post -f txmsg --host http://127.0.0.1:8443/api
+----
+
+== Checking if the transaction was accepted
+
+You can check if the transaction was accepted by checking the node logs, for example, if the transaction is accepted
+
+`jcli rest v0 message logs -h http://127.0.0.1:8443/api`
+
+[source, yaml]
+----
+- fragment_id: d6ef0b2148a51ed64531efc17978a527fd2d2584da1e344a35ad12bf5460a7e2
+  last_updated_at: "2019-06-11T15:38:17.070162114Z"
+  received_at: "2019-06-11T15:37:09.469101162Z"
+  received_from: Rest
+  status:
+    InABlock: "4.707"
+----
+
+Where the InABlock status means that the transaction was accepted in the block with date "4.707".
+
+The status here could also be:
+
+Pending: if the transaction is received and is pending being added in the blockchain (or rejected).
+
+or
+
+Rejected: with an attached message of the reason the transaction was rejected.

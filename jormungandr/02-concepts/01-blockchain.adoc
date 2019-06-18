@@ -1,0 +1,64 @@
+= Blockchain concepts
+
+== Time
+
+Slots represent the basic unit of time in a blockchain,  at each slot
+a block might be present.
+
+Consecutive slots are grouped into epochs, with an updateable size defined
+by the protocol.
+
+== Fragments
+
+A Fragment is data representing about the blockchain, it includes updates to the protocol, transactions and certificate information.
+
+== Blocks
+
+Blocks are the blockchain's spine, they are safely and securely linked
+together into a chain, whilst grouping valid fragments together.
+
+Blocks are composed of 2 parts:
+
+* The header
+* The content
+
+The header securely links the content together with the blocks.
+The content is effectively a sequence of fragments.
+
+== Blockchain
+
+A blockchain is defined by a set of rules that create blocks periodically. Rules can be changed on the fly in system updates, while others are hardcoded in the genesis block (first block of the blockchain).
+
+```
+              +-------+      +-------+
+              |Genesis+<-----+Block 1+<--- ....
+              |Header |      |Header |
+              +---+---+      +---+---+
+                  |              |
+              +---v---+      +---v---+
+              |Genesis|      |Block 1|
+              |Content|      |Content|
+              +-------+      +-------+
+```
+
+== Consensus
+
+Jormungandr currently supports the following consensus protocols:
+
+* Ouroboros BFT (OBFT)
+* Ouroboros Genesis-Praos
+
+Ouroboros BFT is a simple Byzantine Fault Tolerant (BFT) protocol with known
+block makers that create and broadcast blocks onto the network in a round robin type fashion.
+
+Ouroboros Genesis Praos is a proof of stake (PoS) protocol where block
+makers are selected via a sortition or lottery process. Each stake pool has a winning chance of being selected to create the next block proportional to their stake held. The sortitions are private or local to the stake pool, so other nodes don't have no prior knowledge of who can create blocks.
+
+== Leadership
+
+Leadership defines a set of nodes that check blocks are correctly created. New leadership is selected at the start of every epoch.
+
+== Leader
+
+A leader is the randomly selected actor with the ability to create a block;
+In OBFT mode, the leader is just the owner of a cryptographic key, whereas in Genesis-Praos mode, the leader is a stake pool.

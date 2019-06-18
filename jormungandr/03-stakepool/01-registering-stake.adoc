@@ -1,0 +1,25 @@
+= Registering your stake
+
+Without a stake key you cannot participate in the consensus process. Generating this key allows one to have a place for their funds, participate in the protocol, claim stake, reap rewards and if one desires, setup a stakepool.
+
+This key pair identifies you as a potential stake owner.
+
+== You stake key pair
+
+It is preferable to use a key pair that is different from
+your wallet (for security reason). See the [`jcli key`] documentation
+to generate a new key pair of type `Ed25519` or `Ed25519Extended`. For example:
+
+[source, bash]
+----
+$ jcli key generate --type=Ed25519Extended > stake_key.prv
+----
+
+The file `stake_key.prv` will contain your private key.
+
+[source, bash]
+----
+$ cat stake_key.prv | jcli key to-public > stake_key.pub
+----
+
+The file `stake_key.pub` will contain your public key.

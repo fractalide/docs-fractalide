@@ -1,0 +1,43 @@
+= Node organisation
+
+== Secure Enclave
+
+The secure enclave is designed to securely contain secret cryptographic material, it
+offers safe interfaces for the rest of the node to interact with.
+
+== Network
+
+The node's network consists of 3 components:
+
+* Intercommunication API (GRPC)
+* Public client API (REST)
+* Control client API (REST)
+
+=== Intercommunication API (GRPC)
+
+This interface is an binary interface using the protobuf format and GRPC standard.
+The protobuf files schema are available in the source code.
+
+The interface is responsible to communicate with other nodes in the network:
+
+* block sending and receiving
+* fragments (transaction, certificates) broadcast
+* peer2peer gossip
+
+=== Public API REST
+
+This interface is for simple queries for clients like:
+
+* Wallet Client & Middleware
+* Analytics & Debugging tools
+* Explorer
+
+it's recommended for this interface to not be opened to the public.
+
+=== Control API REST
+
+This interface is not finished, but is a restricted via an ACL,
+it allows one to perform maintenance tasks on the process such as:
+
+* Node Shutdown
+* Load/Refresh/Retire cryptographic material

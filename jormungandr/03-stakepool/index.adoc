@@ -1,0 +1,11 @@
+= Staking with Jörmungandr
+
+Here we will describe how to delegate stake to a stake pool allowing rewards to be collected.
+
+Normal users shouldn't need to setup a stakepool, thus please skip that section.
+
+include::01-registering-stake.adoc[leveloffset=+1]
+
+include::02-delegating-stake.adoc[leveloffset=+1]
+
+include::03-registering-stakepool.adoc[leveloffset=+1]

@@ -1,0 +1,15 @@
+= Fractalide Documentation
+:description: Fractalide Documentation
+:icons: font
+:sectnums:
+:toc: left
+:toclevels: 4
+:sectanchors:
+:nofooter:
+:experimental:
+:source-highlighter: highlightjs
+:highlightjsdir: highlight
+
+[preface]
+
+include::jormungandr/index.adoc[]

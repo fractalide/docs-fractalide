@@ -1,0 +1,71 @@
+= Registering stake pool
+
+There are a few bits of information important to running a stake pool:
+
+* Your `NodeId`: The global identifier. Wallets will delegate to your stake pool via this `NodeId`
+* Your `VRF` key pair: this is the cryptographic material used to participate in leader election;
+* Your `KES` key pair: this is the cryptographic material used to sign blocks with.
+
+So in order to start your stake pool you will need to generate these objects.
+
+= The primitives
+
+== link:https://en.wikipedia.org/wiki/Verifiable_random_function[VRF] key pair
+
+link:/httyj/#_jcli[jcli] is used to generate your VRF key pair
+
+[source, bash]
+----
+$ jcli key generate --type=Curve25519_2HashDH > stake_pool_vrf.prv
+----
+
+`stake_pool_vrf.prv` file now contains the VRF private key.
+
+[source, bash]
+----
+$ cat stake_pool_vrf.prv | jcli key to-public > stake_pool_vrf.pub
+----
+
+== KES key pair
+
+Similar to above:
+
+[source, bash]
+----
+$ jcli key generate --type=SumEd25519_12 > stake_pool_kes.prv
+----
+
+`stake_pool_kes.prv` now contains your KES private key
+
+[source, bash]
+----
+$ cat stake_pool_kes.prv | jcli key to-public > stake_pool_kes.pub
+----
+
+== Creating your stake pool certificate
+
+The stakepool certificate is used to indicate to other stakepools you're a block signer.
+
+[source, bash]
+----
+$ jcli certificate new stake-pool-registration \
+    --kes-key $(cat stake_pool_kes.pub) \
+    --vrf-key $(cat stake_pool_vrf.pub) \
+    --serial 1010101010 > stake_pool.cert
+----
+
+Next, sign this certificate with the owner key:
+
+[source, bash]
+----
+$ cat stake_pool.cert | jcli certificate sign stake_key.prv | tee stake_pool.cert
+cert1qsqqqqqqqqqqqqqqqqqqq0p5avfqp9tzusr26...cegxaz
+----
+
+Next, obtain your stake pool id (`NodeId`):
+
+[source, bash]
+----
+$ cat stake_pool.cert | jcli certificate get-stake-pool-id | tee stake_pool.id
+ea830e5d9647af89a5e9a4d4089e6e855891a533316adf4a42b7bf1372389b74
+----

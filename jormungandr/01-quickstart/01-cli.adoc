@@ -1,0 +1,38 @@
+= Installation
+
+The software bundles 2 command line programs:
+
+* `jormungandr`, the node;
+* `jcli`, the Jormungandr Command Line Interface, a low level program that interact with the node.
+
+== Install from a release
+
+This is the recommended method. Releases are available at https://github.com/fractalide/jormungandr-luceo/releases[the release section].
+
+== Install from source
+
+Jormungandr's source code is available at https://github.com/fractalide/jormungandr-luceo#how-to-install-from-sources[github].
+Follow the instructions to build the software from source.
+
+= Help and auto completion
+
+All commands come with usage help, find out by adding `--help` or `-h` to the end of the command.
+
+`jcli` has a feature which allows you to generate auto completion:
+
+[source, bash]
+----
+jcli auto-completion bash ${HOME}/.bash_completion.d
+----
+
+Supported shells are: `bash`, `fish`, `zsh`, `powershell` and `elvish`.
+
+Ensure `${HOME}/.bash_completion.d` directory exists on your hard disk.
+In order to use auto completion you still need to:
+
+[source, bash]
+----
+source ${HOME}/.bash_completion.d/jcli.bash
+----
+
+You can also put it in your `${HOME}/.bashrc` so that it's loaded whenever you enter your shell.

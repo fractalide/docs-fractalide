@@ -1,0 +1,15 @@
+
+:description: How to train your Jörmungandr manual
+:icons: font
+:sectnums:
+:toc: left
+:toclevels: 4
+:sectanchors:
+:nofooter:
+:experimental:
+:source-highlighter: highlightjs
+:highlightjsdir: highlight
+
+[preface]
+
+include::index.adoc[leveloffset=+1]
